@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gráfico de Gastos</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+body {
+font-family: 'Segoe UI', sans-serif;
+background: linear-gradient(135deg, #004aad, #00c6ff);
+color: #fff;
+margin: 0;
+padding: 20px;
+text-align: center;
+}
+.container {
+max-width: 600px;
+margin: 40px auto;
+background: rgba(255,255,255,0.1);
+padding: 20px;
+border-radius: 12px;
+box-shadow: 0 0 15px rgba(0,0,0,0.3);
+}
+h1 { margin-bottom: 20px; }
+</style>
+</head>
+<body>
+
+<div class="container">
+<h1>Distribuição de Gastos</h1>
+<h1><div class="saldo" id="saldoConstante">R$ 0,00</div></h1>
+
+
+
+<canvas id="graficoGastos" width="400" height="400"></canvas>
+ <button class="voltar" onclick="window.location.href='index.html'">⬅ Voltar</button>
+</div>
+  
+    
+
+<script src="saldo.js"></script>
+
+
+<script>
+// -------------------------
+// API de Bolsa Simulada
+// -------------------------
+
+// Cotação em tempo real (simulada)
+function getQuote(symbol) {
+return {
+symbol: symbol.toUpperCase(),
+price: (100 + Math.random() * 50).toFixed(2),
+timestamp: new Date().toLocaleTimeString()
+};
+}
+
+// Histórico (7 dias, simulado)
+function getHistorical(symbol) {
+let data = [];
+for (let i = 6; i >= 0; i--) {
+data.push({
+day: (6 - i) + " dias atrás",
+price: (100 + Math.random() * 50).toFixed(2)
+});
+}
+return data;
+}
+
+// Sistema simples de ordens simuladas
+let ORDERS = [];
+
+function placeOrder(symbol, side, quantity) {
+const execPrice = (100 + Math.random() * 50).toFixed(2);
+
+let order = {
+id: Math.floor(Math.random() * 1000000),
+symbol: symbol.toUpperCase(),
+side: side,
+quantity: quantity,
+executed_price: execPrice,
+status: "filled",
+timestamp: new Date().toLocaleTimeString()
+};
+
+ORDERS.push(order);
+return order;
+}
+
+// -------------------------
+// Funções para integrar com o HTML
+// -------------------------
+
+function buscarCotacao() {
+let symbol = document.getElementById("symbol").value;
+let quote = getQuote(symbol);
+
+document.getElementById("preco").innerText = quote.price + " USD";
+document.getElementById("timestamp").innerText = quote.timestamp;
+}
+
+function mostrarHistorico() {
+let symbol = document.getElementById("symbol").value;
+let data = getHistorical(symbol);
+
+document.getElementById("historico").innerText =
+JSON.stringify(data, null, 2);
+}
+
+function enviarOrdem() {
+let symbol = document.getElementById("symbol").value;
+let side = document.getElementById("side").value;
+let qty = document.getElementById("qty").value;
+
+let order = placeOrder(symbol, side, qty);
+
+document.getElementById("ordemInfo").innerText =
+JSON.stringify(order, null, 2);
+}
+</script>
+
+</body>
+</html>

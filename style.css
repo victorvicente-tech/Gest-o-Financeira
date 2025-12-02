@@ -1,0 +1,66 @@
+body {
+font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+background: linear-gradient(135deg, #004aad, #00c6ff);
+color: #fff;
+text-align: center;
+margin: 0;
+padding: 0;
+}
+
+.container {
+max-width: 400px;
+margin: 50px auto;
+background: rgba(255, 255, 255, 0.1);
+padding: 20px;
+border-radius: 12px;
+box-shadow: 0 0 15px rgba(0,0,0,0.3);
+}
+
+h1 {
+margin-bottom: 20px;
+}
+
+input {
+width: 90%;
+padding: 10px;
+margin: 8px 0;
+border: none;
+border-radius: 8px;
+}
+
+button {
+background: #00c6ff;
+color: #fff;
+border: none;
+padding: 10px 20px;
+border-radius: 8px;
+cursor: pointer;
+transition: 0.3s;
+}
+
+button:hover {
+background: #004aad;
+}
+
+ul {
+list-style: none;
+padding: 0;
+}
+
+li {
+background: rgba(255,255,255,0.2);
+margin: 5px 0;
+padding: 8px;
+border-radius: 6px;
+}
+
+.voltar {
+margin-top: 15px;
+background: #ff6666;
+}
+
+.saldo {
+font-size: 5px;
+font-weight: bold;
+margin-top: 20px;
+}

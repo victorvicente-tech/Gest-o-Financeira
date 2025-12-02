@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gestão Financeira + Bolsa</title>
+<style>
+body {
+font-family: 'Segoe UI', sans-serif;
+background: linear-gradient(135deg, #004aad, #00c6ff);
+color: #fff;
+text-align: center;
+margin: 0;
+padding: 0;
+}
+.container {
+max-width: 500px;
+margin: 40px auto;
+background: rgba(255,255,255,0.1);
+padding: 20px;
+border-radius: 12px;
+box-shadow: 0 0 15px rgba(0,0,0,0.3);
+}
+h1 { margin-bottom: 20px; }
+input, button {
+width: 90%;
+padding: 10px;
+margin: 8px 0;
+border: none;
+border-radius: 8px;
+}
+button {
+background: #00c6ff;
+color: #fff;
+cursor: pointer;
+font-weight: bold;
+transition: 0.3s;
+}
+button:hover { background: #004aad; }
+table {
+width: 100%;
+margin-top: 20px;
+border-collapse: collapse;
+color: #fff;
+}
+th, td {
+padding: 8px;
+border-bottom: 1px solid rgba(255,255,255,0.3);
+}
+th { text-align: left; }
+.positivo { color: #00ff7f; }
+.negativo { color: #ff4747; }
+</style>
+</head>
+<body>
+
+<!-- ===== QUADRO DE GESTÃO FINANCEIRA ===== -->
+<div class="container">
+<h1>Gestão Financeira</h1>
+
+<button onclick="window.location.href='receita.html'">Receitas</button>
+<button onclick="window.location.href='despesas.html'">Despesas</button>
+<button onclick="window.location.href='saldo.html'">Ver Saldo</button>
+<button onclick="window.location.href='simulador.html'">Simular Investimento</button>
+</div>
+
+<!-- ===== SEÇÃO BOLSA DE VALORES ===== -->
+<div class="container">
+<h1>Bolsa de Valores</h1>
+<table id="tabelaAcoes">
+<thead>
+<tr>
+<th>Ação</th>
+<th>Preço</th>
+<th>Variação</th>
+<th>%</th>
+</tr>
+</thead>
+<tbody></tbody>
+</table>
+</div>
+
+<script>
+// Lista de ações para mostrar na tabela
+const acoes = ['PETR4', 'VALE3', 'ITUB4',' AAPL34'];
+
+async function carregarBolsa() {
+const tbody = document.querySelector('#tabelaAcoes tbody');
+tbody.innerHTML = '';
+
+for (let codigo of acoes) {
+try {
+// API da Brapi (sem chave para teste, retorna dados públicos limitados)
+const response = await fetch(`https://brapi.dev/api/quote/${codigo}`);
+const data = await response.json();
+
+if (data.results && data.results.length > 0) {
+const acao = data.results[0];
+
+const tr = document.createElement('tr');
+tr.innerHTML = `
+<td>${acao.shortName}</td>
+<td>R$ ${acao.regularMarketPrice.toFixed(2)}</td>
+<td class="${acao.regularMarketChange >= 0 ? 'positivo' : 'negativo'}">
+${acao.regularMarketChange.toFixed(2)}
+</td>
+<td class="${acao.regularMarketChangePercent >= 0 ? 'positivo' : 'negativo'}">
+${acao.regularMarketChangePercent.toFixed(2)}%
+</td>
+`;
+tbody.appendChild(tr);
+}
+} catch (err) {
+console.error('Erro ao buscar dados da ação:', codigo, err);
+const tr = document.createElement('tr');
+tr.innerHTML = `<td colspan="4">Erro ao carregar ${codigo}</td>`;
+tbody.appendChild(tr);
+}
+}
+}
+
+// Carrega a Bolsa ao abrir a página
+carregarBolsa();
+</script>
+</body>
+</html>

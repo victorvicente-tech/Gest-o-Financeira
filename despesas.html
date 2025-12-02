@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Despesas</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="container">
+<h1>Despesas</h1>
+<form id="formDespesa">
+<input type="text" id="descDespesa" placeholder="Descrição" required>
+<input type="number" id="valorDespesa" placeholder="Valor (R$)" required>
+<button type="submit">Adicionar Despesa</button>
+</form>
+<h2>Minhas Despesas</h2>
+<ul id="listaDespesas"></ul>
+<button class="voltar" onclick="window.location.href='index.html'">⬅ Voltar</button>
+</div>
+<script src="script.js"></script>
+</body>
+</html>

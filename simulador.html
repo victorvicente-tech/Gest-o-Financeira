@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sistema Financeiro Completo</title>
+<link rel="stylesheet" href="style.css">
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+</head>
+<body>
+
+
+
+<!-- Aba Gastos -->
+
+<!-- Aba Simulador -->
+<section id="simulador">
+<div class="container">
+<h2>Simulador de Investimentos Avançado</h2>
+<input type="number" id="valorInicial" placeholder="Valor inicial (R$)">
+<input type="number" id="aporteMensal" placeholder="Aporte mensal (R$)">
+<input type="number" id="juros" placeholder="Taxa de juros ao mês (%)">
+<input type="number" id="meses" placeholder="Tempo (meses)">
+<button onclick="simularInvestimento()">Simular</button>
+<p id="resultadoSimulador">Preencha os campos e clique em "Simular".</p>
+<canvas id="graficoInvestimento"></canvas>
+<div class="dados" id="detalhesInvestimento"></div>
+<button class="voltar" onclick="window.location.href='index.html'">⬅ Voltar</button>
+</div>
+</section>
+
+<script>
+// Função para alternar abas
+function mostrarAba(aba) {
+document.querySelectorAll("section").forEach(sec => sec.classList.remove("active"));
+document.getElementById(aba).classList.add("active");
+}
+
+// === GASTOS ===
+let gastos = [];
+let graficoGastos;
+function adicionarGasto() {
+const desc = document.getElementById("descricao").value;
+const val = parseFloat(document.getElementById("valor").value);
+if(!desc || isNaN(val)) { alert("Preencha corretamente"); return; }
+gastos.push({desc, val});
+atualizarGastos();
+}
+
+function atualizarGastos() {
+const lista = document.getElementById("listaGastos");
+lista.innerHTML = "";
+let total = 0;
+gastos.forEach(g => {
+lista.innerHTML += `<li>${g.desc} - R$ ${g.val.toFixed(2)}</li>`;
+total += g.val;
+});
+document.getElementById("totalGasto").textContent = total.toFixed(2);
+const ctx = document.getElementById("graficoGastos").getContext("2d");
+if(graficoGastos) graficoGastos.destroy();
+graficoGastos = new Chart(ctx, {
+type:'pie',
+data:{
+labels:gastos.map(g=>g.desc),
+datasets:[{ data:gastos.map(g=>g.val), backgroundColor:['#3498db','#2ecc71','#e74c3c','#f1c40f','#9b59b6'] }]
+}
+});
+}
+
+// === SIMULADOR DE INVESTIMENTO ===
+let graficoInvestimento;
+let dadosInvestimento = [];
+function simularInvestimento() {
+const valorInicial = parseFloat(document.getElementById("valorInicial").value);
+const aporte = parseFloat(document.getElementById("aporteMensal").value);
+const juros = parseFloat(document.getElementById("juros").value);
+const meses = parseInt(document.getElementById("meses").value);
+if(isNaN(valorInicial)||isNaN(aporte)||isNaN(juros)||isNaN(meses)) { alert("Preencha todos os campos"); return; }
+
+let valor = valorInicial;
+let labels = [];
+let valores = [];
+let totalInvestido = valorInicial;
+dadosInvestimento = [];
+
+for(let i=1;i<=meses;i++){
+valor = (valor + aporte)*(1 + juros/100);
+totalInvestido += aporte;
+valores.push(valor.toFixed(2));
+labels.push(`Mês ${i}`);
+dadosInvestimento.push({mes:i, investido:totalInvestido.toFixed(2), valorFinal:valor.toFixed(2)});
+}
+
+document.getElementById("resultadoSimulador").textContent =
+`Após ${meses} meses, você terá R$ ${valor.toFixed(2)} (Investido: R$ ${totalInvestido.toFixed(2)})`;
+
+let detalhesHTML = '';
+dadosInvestimento.forEach(d=>detalhesHTML+=`<p>Mês ${d.mes}: Investido R$ ${d.investido}, Valor final R$ ${d.valorFinal}</p>`);
+document.getElementById("detalhesInvestimento").innerHTML = detalhesHTML;
+
+const ctx = document.getElementById("graficoInvestimento").getContext("2d");
+if(graficoInvestimento) graficoInvestimento.destroy();
+graficoInvestimento = new Chart(ctx, {
+type:'line',
+data:{
+labels:labels,
+datasets:[{
+label:'Valor do Investimento',
+data:valores,
+borderColor:'#27ae60',
+fill:false,
+tension:0.2
+}]
+},
+options:{scales:{y:{beginAtZero:false}}}
+});
+}
+</script>
+
+</body>
+</html>
